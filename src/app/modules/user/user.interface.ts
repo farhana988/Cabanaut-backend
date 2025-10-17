@@ -16,7 +16,7 @@ export enum IsActive {
 }
 
 export interface IUser {
-  _id: mongoose.Types.ObjectId;
+  _id?: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password?: string;
@@ -25,7 +25,7 @@ export interface IUser {
   address?: string;
   isDeleted?: boolean;
   isActive?: IsActive;
-  isVerified?: IsActive;
+  isVerified?: boolean;
   role: Role;
   auth: IAuthProvider[];
   bookings?: Types.ObjectId[];
