@@ -7,4 +7,10 @@ const router = Router();
 
 router.post("/book-ride", checkAuth(Role.RIDER), RideController.createRide);
 
+router.get(
+  "/ride-history",
+  checkAuth(Role.RIDER),
+  RideController.viewRideHistory
+);
+
 export const RideRoute = router;

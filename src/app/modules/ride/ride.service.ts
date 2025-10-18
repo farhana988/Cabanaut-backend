@@ -5,6 +5,7 @@ import { User } from "../user/user.model";
 import { haversineDistanceInKm } from "../../utils/distance";
 import AppError from "../../errorHelpers/AppError";
 import { envVars } from "../../config/env";
+import { Types } from "mongoose";
 
 const BASE_FARE = parseFloat(envVars.BASE_FARE);
 const PER_KM_RATE = parseFloat(envVars.PER_KM_RATE);
@@ -41,6 +42,16 @@ const createRide = async (payload: Partial<IRide>) => {
   return newRide;
 };
 
+const viewRideHistory = async (userId: string) => {
+  const rideHistory = await Ride.find({ rider: new Types.ObjectId(userId) });
+
+  if (!rideHistory) {
+    throw new AppError(httpStatus.NOT_FOUND, "Ride History Not Found");
+  }
+
+  return rideHistory;
+};
 export const RideServices = {
   createRide,
+  viewRideHistory,
 };
