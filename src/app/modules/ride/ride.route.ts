@@ -13,4 +13,10 @@ router.get(
   RideController.viewRideHistory
 );
 
+router.patch(
+  "/cancel/:rideId",
+  checkAuth(Role.RIDER),
+  RideController.cancelRide
+);
+
 export const RideRoute = router;

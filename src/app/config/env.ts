@@ -15,6 +15,7 @@ interface EnvConfig {
   SUPER_ADMIN_PASSWORD: string;
   BASE_FARE: string;
   PER_KM_RATE: string;
+  CANCEL_TIME_MINUTES: string;
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -31,6 +32,7 @@ const loadEnvVariables = (): EnvConfig => {
     "JWT_REFRESH_EXPIRES",
     "BASE_FARE",
     "PER_KM_RATE",
+    "CANCEL_TIME_MINUTES",
   ];
 
   requiredEnvVariables.forEach((key) => {
@@ -53,6 +55,7 @@ const loadEnvVariables = (): EnvConfig => {
     SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
     BASE_FARE: process.env.BASE_FARE as string,
     PER_KM_RATE: process.env.PER_KM_RATE as string,
+    CANCEL_TIME_MINUTES: process.env.CANCEL_TIME_MINUTES as string,
   };
 };
 

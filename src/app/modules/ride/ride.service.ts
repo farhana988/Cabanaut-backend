@@ -1,5 +1,5 @@
 import httpStatus from "http-status-codes";
-import { IRide } from "./ride.interface";
+import { IRide, RideStatus } from "./ride.interface";
 import { Ride } from "./ride.model";
 import { User } from "../user/user.model";
 import { haversineDistanceInKm } from "../../utils/distance";
@@ -9,6 +9,7 @@ import { Types } from "mongoose";
 
 const BASE_FARE = parseFloat(envVars.BASE_FARE);
 const PER_KM_RATE = parseFloat(envVars.PER_KM_RATE);
+const CANCEL_TIME = parseInt(envVars.CANCEL_TIME_MINUTES);
 
 const createRide = async (payload: Partial<IRide>) => {
   const rider = await User.findOne({ _id: payload.rider });
@@ -51,7 +52,54 @@ const viewRideHistory = async (userId: string) => {
 
   return rideHistory;
 };
+
+const cancelRide = async (rideId: string, riderId: string) => {
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    throw new AppError(httpStatus.NOT_FOUND, "ride not found");
+  }
+  if (ride.rider.toString() !== riderId) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You do not have permission to cancel this ride."
+    );
+  }
+
+  if (
+    !(
+      ride.status === RideStatus.REQUESTED ||
+      ride.status === RideStatus.ACCEPTED
+    )
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Ride can no longer be cancelled."
+    );
+  }
+
+  const now = new Date();
+  const requestedAt = ride.timestampsLog.requestedAt;
+  if (!requestedAt) {
+    throw new AppError(httpStatus.NOT_FOUND, "Requested Date Not Found");
+  }
+  const differentInMinutes =
+    (now.getTime() - requestedAt?.getTime()) / 1000 / 60;
+
+  if (differentInMinutes > CANCEL_TIME) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You can no longer cancel this ride."
+    );
+  }
+  ride.status = RideStatus.CANCELLED;
+  ride.timestampsLog.cancelledAt = now;
+  await ride.save();
+
+  return ride;
+};
+
 export const RideServices = {
   createRide,
   viewRideHistory,
+  cancelRide,
 };

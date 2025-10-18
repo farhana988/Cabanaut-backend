@@ -27,7 +27,20 @@ const viewRideHistory = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const cancelRide = catchAsync(async (req: Request, res: Response) => {
+  const { rideId } = req.params;
+  const { userId: riderId } = req.user as JwtPayload;
+  const ride = await RideServices.cancelRide(rideId, riderId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "Ride Cancelled Successfully",
+    data: ride,
+  });
+});
+
 export const RideController = {
   createRide,
   viewRideHistory,
+  cancelRide,
 };
