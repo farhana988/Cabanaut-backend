@@ -51,7 +51,7 @@ export const createNewAccessTokenWithRefreshToken = async (
       `User is ${isUserExist.isActive}`
     );
   }
-  if (isUserExist.isDeleted) {
+  if (isUserExist.isBlocked) {
     throw new AppError(httpStatus.BAD_REQUEST, "User is deleted");
   }
 

@@ -33,7 +33,7 @@ const seedSuperAdmin = async () => {
       email: envVars.SUPER_ADMIN_EMAIL,
       password: hashedPassword,
       isActive: IsActive.Active,
-      isDeleted: false,
+      isBlocked: false,
       isVerified: true,
       role: Role.SUPER_ADMIN,
       auth: [authProvider],
