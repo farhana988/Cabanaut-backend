@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 export enum DriverApproveStatus {
   Pending = "PENDING",
@@ -11,7 +11,7 @@ export enum DriverAvailability {
 }
 
 export interface IDriver {
-  _id?: Types.ObjectId;
+  _id?: mongoose.Types.ObjectId;
   user: Types.ObjectId;
   vehicle: {
     make?: string;
