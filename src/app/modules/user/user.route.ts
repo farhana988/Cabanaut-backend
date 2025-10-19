@@ -23,5 +23,9 @@ router.patch(
   checkAuth(...Object.values(Role)),
   UserController.updateUser
 );
-
+router.patch(
+  "/block-user/:userId",
+  checkAuth(Role.SUPER_ADMIN),
+  UserController.blockUser
+);
 export const userRoute = router;

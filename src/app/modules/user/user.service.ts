@@ -89,8 +89,23 @@ const getAllUsers = async () => {
   };
 };
 
+const blockUser = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
+  }
+  if (user.isBlocked) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User Already Blocked");
+  }
+
+  user.isBlocked = true;
+  await user.save();
+  return user;
+};
+
 export const UserServices = {
   createUser,
   getAllUsers,
   updateUser,
+  blockUser,
 };

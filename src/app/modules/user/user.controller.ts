@@ -51,8 +51,23 @@ const getAllUsers = catchAsync(
   }
 );
 
+// block user
+const blockUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.params;
+    const driver = await UserServices.blockUser(userId);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "User Blocked successfully",
+      data: driver,
+    });
+  }
+);
+
 export const UserController = {
   createUser,
   getAllUsers,
   updateUser,
+  blockUser,
 };
