@@ -8,6 +8,10 @@ export enum DriverApproveStatus {
 
 export enum DriverAvailability {
   AVAILABLE = "AVAILABLE",
+  UNAVAILABLE = "UNAVAILABLE",
+  OFFLINE = "OFFLINE",
+  ON_RIDE = "ON_RIDE",
+  BUSY = "BUSY",
 }
 
 export interface IDriver {
@@ -22,7 +26,7 @@ export interface IDriver {
   nationalId: string;
   vehicleImage?: string;
   isOnline?: boolean;
-  approvedStatus?: DriverApproveStatus;
+  availabilityStatus?: DriverApproveStatus;
   totalEarning?: number;
   currentRide?: Types.ObjectId | null;
 }
