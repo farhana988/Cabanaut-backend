@@ -4,9 +4,7 @@ import AppError from "../../errorHelpers/AppError";
 import { RideStatus } from "../ride/ride.interface";
 import { Types } from "mongoose";
 import { Driver } from "./driver.model";
-import { IDriver } from "./driver.interface";
-import { User } from "../user/user.model";
-import { Role } from "../user/user.interface";
+import { DriverApproveStatus, IDriver } from "./driver.interface";
 
 const acceptRide = async (rideId: string, driverId: string) => {
   const ride = await Ride.findById(rideId);
@@ -47,15 +45,29 @@ const registerForDriver = async (userId: string, payload: Partial<IDriver>) => {
     user: userId,
     ...payload,
   });
-  const user = await User.findById(userId);
-  if (user) {
-    user.role = Role.DRIVER;
-    await user.save();
-  }
+
   return newDriver;
+};
+
+const onlineStatus = async (driverUserId: string, isOnline: boolean) => {
+  const driver = await Driver.findOne({
+    user: new Types.ObjectId(driverUserId),
+  });
+  if (!driver) {
+    throw new AppError(httpStatus.NOT_FOUND, "Driver Not Found");
+  }
+
+  if (driver.approvedStatus !== DriverApproveStatus.Approved) {
+    throw new AppError(httpStatus.NOT_FOUND, "Driver Is Not Approved");
+  }
+
+  driver.isOnline = isOnline;
+  await driver.save();
+  return driver;
 };
 
 export const DriverServices = {
   acceptRide,
   registerForDriver,
+  onlineStatus,
 };

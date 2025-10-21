@@ -18,5 +18,10 @@ router.post(
   validateRequest(requestForDriverZodSchema),
   DriverController.registerForDriver
 );
+router.patch(
+  "/is-online",
+  checkAuth(Role.DRIVER),
+  DriverController.onlineStatus
+);
 
 export const DriverRoutes = router;

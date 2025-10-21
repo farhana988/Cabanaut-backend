@@ -29,7 +29,20 @@ const registerForDriver = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const onlineStatus = catchAsync(async (req: Request, res: Response) => {
+  const { isOnline } = req.body;
+  const { userId: driverUserId } = req.user as JwtPayload;
+  const driver = await DriverServices.onlineStatus(driverUserId, isOnline);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: `Driver is now ${isOnline ? "online" : "offline"}.`,
+    data: driver,
+  });
+});
+
 export const DriverController = {
   acceptRide,
   registerForDriver,
+  onlineStatus,
 };
