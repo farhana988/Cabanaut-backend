@@ -7,21 +7,29 @@ import { requestForDriverZodSchema } from "./driver.validation";
 
 const router = Router();
 
-router.patch(
-  "/accept/:rideId",
-  checkAuth(Role.DRIVER),
-  DriverController.acceptRide
-);
 router.post(
   "/register",
   checkAuth(Role.RIDER),
   validateRequest(requestForDriverZodSchema),
   DriverController.registerForDriver
 );
+
 router.patch(
   "/is-online",
   checkAuth(Role.DRIVER),
   DriverController.onlineStatus
+);
+
+router.patch(
+  "/accept/:rideId",
+  checkAuth(Role.DRIVER),
+  DriverController.acceptRide
+);
+
+router.patch(
+  "/reject/:rideId",
+  checkAuth(Role.DRIVER),
+  DriverController.rejectRide
 );
 
 export const DriverRoutes = router;

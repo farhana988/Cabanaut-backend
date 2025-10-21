@@ -5,18 +5,6 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { DriverServices } from "./driver.service";
 
-const acceptRide = catchAsync(async (req: Request, res: Response) => {
-  const { rideId } = req.params;
-  const { userId: driverId } = req.user as JwtPayload;
-  const ride = await DriverServices.acceptRide(rideId, driverId);
-  sendResponse(res, {
-    success: true,
-    statusCode: httpStatus.CREATED,
-    message: "Ride Accepted Successfully",
-    data: ride,
-  });
-});
-
 const registerForDriver = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user as JwtPayload;
   const payload = req.body;
@@ -41,8 +29,32 @@ const onlineStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const acceptRide = catchAsync(async (req: Request, res: Response) => {
+  const { rideId } = req.params;
+  const { userId: driverId } = req.user as JwtPayload;
+  const ride = await DriverServices.acceptRide(rideId, driverId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "Ride Accepted Successfully",
+    data: ride,
+  });
+});
+
+const rejectRide = catchAsync(async (req: Request, res: Response) => {
+  const { rideId } = req.params;
+  const ride = await DriverServices.rejectRide(rideId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Ride Rejected Successfully",
+    data: ride,
+  });
+});
+
 export const DriverController = {
-  acceptRide,
   registerForDriver,
   onlineStatus,
+  acceptRide,
+  rejectRide,
 };

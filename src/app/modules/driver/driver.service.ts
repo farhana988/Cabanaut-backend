@@ -6,32 +6,6 @@ import { Types } from "mongoose";
 import { Driver } from "./driver.model";
 import { DriverApproveStatus, IDriver } from "./driver.interface";
 
-const acceptRide = async (rideId: string, driverId: string) => {
-  const ride = await Ride.findById(rideId);
-  if (!ride) {
-    throw new AppError(httpStatus.NOT_FOUND, "Could not find the ride.");
-  }
-  if (ride.status !== RideStatus.REQUESTED) {
-    throw new AppError(
-      httpStatus.NOT_FOUND,
-      "This ride is no longer available for acceptance."
-    );
-  }
-  if (ride.driver) {
-    throw new AppError(
-      httpStatus.NOT_FOUND,
-      "This ride has already been assigned to another driver."
-    );
-  }
-
-  ride.driver = new Types.ObjectId(driverId);
-  ride.status = RideStatus.ACCEPTED;
-  ride.timestampsLog.acceptedAt = new Date();
-  await ride.save();
-
-  return ride;
-};
-
 const registerForDriver = async (userId: string, payload: Partial<IDriver>) => {
   const existingDrive = await Driver.findOne({ user: userId });
   if (existingDrive) {
@@ -66,8 +40,53 @@ const onlineStatus = async (driverUserId: string, isOnline: boolean) => {
   return driver;
 };
 
+const acceptRide = async (rideId: string, driverId: string) => {
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    throw new AppError(httpStatus.NOT_FOUND, "Could not find the ride.");
+  }
+  if (ride.status !== RideStatus.REQUESTED) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "This ride is no longer available for acceptance."
+    );
+  }
+  if (ride.driver) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "This ride has already been assigned to another driver."
+    );
+  }
+
+  ride.driver = new Types.ObjectId(driverId);
+  ride.status = RideStatus.ACCEPTED;
+  ride.timestampsLog.acceptedAt = new Date();
+  await ride.save();
+
+  return ride;
+};
+
+const rejectRide = async (rideId: string) => {
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    throw new AppError(httpStatus.NOT_FOUND, "ride not found");
+  }
+
+  if (ride.status !== RideStatus.REQUESTED) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Rides can only be rejected while in requested status"
+    );
+  }
+  ride.status = RideStatus.REJECTED;
+  await ride.save();
+
+  return ride;
+};
+
 export const DriverServices = {
-  acceptRide,
   registerForDriver,
   onlineStatus,
+  acceptRide,
+  rejectRide,
 };
