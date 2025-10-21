@@ -5,6 +5,8 @@ import { User } from "./user.model";
 import AppError from "../../errorHelpers/AppError";
 import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
+import { Driver } from "../driver/driver.model";
+import { DriverApproveStatus } from "../driver/driver.interface";
 
 // create user
 const createUser = async (payload: Partial<IUser>) => {
@@ -103,9 +105,31 @@ const blockUser = async (userId: string) => {
   return user;
 };
 
+const driverApprovedStatus = async (driverId: string) => {
+  const driver = await Driver.findById(driverId);
+  const user = await User.findById(driver?.user);
+  if (!driver) {
+    throw new AppError(httpStatus.NOT_FOUND, "Driver Not Found");
+  }
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
+  }
+  if (driver.approvedStatus === DriverApproveStatus.Approved) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Driver Already Approved");
+  }
+
+  driver.approvedStatus = DriverApproveStatus.Approved;
+  user.role = Role.DRIVER;
+
+  await driver.save();
+  await user.save();
+  return driver;
+};
+
 export const UserServices = {
   createUser,
   getAllUsers,
   updateUser,
   blockUser,
+  driverApprovedStatus,
 };

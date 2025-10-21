@@ -65,9 +65,23 @@ const blockUser = catchAsync(
   }
 );
 
+const driverApprovedStatus = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { driverId } = req.params;
+    const driver = await UserServices.driverApprovedStatus(driverId);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Driver Status Approved successfully",
+      data: driver,
+    });
+  }
+);
+
 export const UserController = {
   createUser,
   getAllUsers,
   updateUser,
   blockUser,
+  driverApprovedStatus,
 };

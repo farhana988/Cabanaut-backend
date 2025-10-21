@@ -28,4 +28,10 @@ router.patch(
   checkAuth(Role.SUPER_ADMIN),
   UserController.blockUser
 );
+router.patch(
+  "/approved-driver-status/:driverId",
+  checkAuth(Role.SUPER_ADMIN),
+  UserController.driverApprovedStatus
+);
+
 export const userRoute = router;
