@@ -126,10 +126,32 @@ const driverApprovedStatus = async (driverId: string) => {
   return driver;
 };
 
+const driverSuspendStatus = async (driverId: string) => {
+  const driver = await Driver.findById(driverId);
+  const user = await User.findById(driver?.user);
+  if (!driver) {
+    throw new AppError(httpStatus.NOT_FOUND, "Driver Not Found");
+  }
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
+  }
+  if (driver.approvedStatus === DriverApproveStatus.Suspended) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Driver Already Suspended");
+  }
+
+  driver.approvedStatus = DriverApproveStatus.Suspended;
+  user.role = Role.RIDER;
+
+  await driver.save();
+  await user.save();
+  return driver;
+};
+
 export const UserServices = {
   createUser,
   getAllUsers,
   updateUser,
   blockUser,
   driverApprovedStatus,
+  driverSuspendStatus,
 };

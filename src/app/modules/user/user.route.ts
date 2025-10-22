@@ -34,4 +34,10 @@ router.patch(
   UserController.driverApprovedStatus
 );
 
+router.patch(
+  "/suspended-driver-status/:driverId",
+  checkAuth(Role.SUPER_ADMIN),
+  UserController.driverSuspendStatus
+);
+
 export const userRoute = router;

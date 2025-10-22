@@ -78,10 +78,24 @@ const driverApprovedStatus = catchAsync(
   }
 );
 
+const driverSuspendStatus = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { driverId } = req.params;
+    const driver = await UserServices.driverSuspendStatus(driverId);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Driver has been suspended successfully",
+      data: driver,
+    });
+  }
+);
+
 export const UserController = {
   createUser,
   getAllUsers,
   updateUser,
   blockUser,
   driverApprovedStatus,
+  driverSuspendStatus,
 };
