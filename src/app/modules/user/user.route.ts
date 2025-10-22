@@ -21,6 +21,13 @@ router.get(
   UserController.getAllUsers
 );
 
+// get all riders
+router.get(
+  "/all-riders",
+  checkAuth(Role.SUPER_ADMIN),
+  UserController.getAllRider
+);
+
 // get all drivers
 router.get(
   "/all-drivers",

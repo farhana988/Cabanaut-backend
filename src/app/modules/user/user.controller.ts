@@ -51,6 +51,19 @@ const getAllUsers = catchAsync(
   }
 );
 
+// get all riders
+const getAllRider = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const users = await UserServices.getAllRider();
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "All rider Retrieved successfully",
+      data: users,
+    });
+  }
+);
+
 // get all drivers
 const getAllDriver = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -109,6 +122,7 @@ const driverSuspendStatus = catchAsync(
 export const UserController = {
   createUser,
   getAllUsers,
+  getAllRider,
   getAllDriver,
   updateUser,
   blockUser,

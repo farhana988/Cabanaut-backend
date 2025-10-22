@@ -7,6 +7,7 @@ import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
 import { Driver } from "../driver/driver.model";
 import { DriverApproveStatus } from "../driver/driver.interface";
+import { Ride } from "../ride/ride.model";
 
 // create user
 const createUser = async (payload: Partial<IUser>) => {
@@ -91,6 +92,13 @@ const getAllUsers = async () => {
   };
 };
 
+// get all riders
+const getAllRider = async () => {
+  const allRider = await Ride.find({}).sort({ createdAt: -1 });
+
+  return allRider;
+};
+
 // get all drivers
 const getAllDriver = async () => {
   const allDrivers = await Driver.find({}).sort({ createdAt: -1 });
@@ -160,6 +168,7 @@ const driverSuspendStatus = async (driverId: string) => {
 export const UserServices = {
   createUser,
   getAllUsers,
+  getAllRider,
   getAllDriver,
   updateUser,
   blockUser,
