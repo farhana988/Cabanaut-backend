@@ -91,6 +91,14 @@ const getAllUsers = async () => {
   };
 };
 
+// get all drivers
+const getAllDriver = async () => {
+  const allDrivers = await Driver.find({}).sort({ createdAt: -1 });
+
+  return allDrivers;
+};
+
+// block a user by userId
 const blockUser = async (userId: string) => {
   const user = await User.findById(userId);
   if (!user) {
@@ -105,6 +113,7 @@ const blockUser = async (userId: string) => {
   return user;
 };
 
+// approve a driver's status by driverId
 const driverApprovedStatus = async (driverId: string) => {
   const driver = await Driver.findById(driverId);
   const user = await User.findById(driver?.user);
@@ -126,6 +135,7 @@ const driverApprovedStatus = async (driverId: string) => {
   return driver;
 };
 
+// suspend a driver's status by driverId
 const driverSuspendStatus = async (driverId: string) => {
   const driver = await Driver.findById(driverId);
   const user = await User.findById(driver?.user);
@@ -150,6 +160,7 @@ const driverSuspendStatus = async (driverId: string) => {
 export const UserServices = {
   createUser,
   getAllUsers,
+  getAllDriver,
   updateUser,
   blockUser,
   driverApprovedStatus,

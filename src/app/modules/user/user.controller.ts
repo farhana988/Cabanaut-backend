@@ -29,7 +29,7 @@ const updateUser = catchAsync(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       message: "User Updated Successfully",
       data: user,
     });
@@ -43,7 +43,7 @@ const getAllUsers = catchAsync(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       message: "All Users Retrieved Successfully",
       data: result.data,
       meta: result.meta,
@@ -51,33 +51,48 @@ const getAllUsers = catchAsync(
   }
 );
 
-// block user
+// get all drivers
+const getAllDriver = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const driver = await UserServices.getAllDriver();
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "All Driver Retrieved successfully",
+      data: driver,
+    });
+  }
+);
+
+// block a user by userId
 const blockUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.params;
     const driver = await UserServices.blockUser(userId);
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       message: "User Blocked successfully",
       data: driver,
     });
   }
 );
 
+// approve a driver's status by driverId
 const driverApprovedStatus = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { driverId } = req.params;
     const driver = await UserServices.driverApprovedStatus(driverId);
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       message: "Driver Status Approved successfully",
       data: driver,
     });
   }
 );
 
+// suspend a driver's status by driverId
 const driverSuspendStatus = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { driverId } = req.params;
@@ -94,6 +109,7 @@ const driverSuspendStatus = catchAsync(
 export const UserController = {
   createUser,
   getAllUsers,
+  getAllDriver,
   updateUser,
   blockUser,
   driverApprovedStatus,
