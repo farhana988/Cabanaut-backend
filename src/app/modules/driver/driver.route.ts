@@ -38,4 +38,9 @@ router.patch(
   DriverController.updateRideStatus
 );
 
+router.get(
+  "/earnings",
+  checkAuth(Role.DRIVER),
+  DriverController.viewEarningsHistory
+);
 export const DriverRoutes = router;

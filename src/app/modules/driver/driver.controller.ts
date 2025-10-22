@@ -69,10 +69,22 @@ const updateRideStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const viewEarningsHistory = catchAsync(async (req: Request, res: Response) => {
+  const { userId: driverUserId } = req.user as JwtPayload;
+  const earnings = await DriverServices.viewEarningsHistory(driverUserId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Earnings history retrieved Successfully",
+    data: earnings,
+  });
+});
+
 export const DriverController = {
   registerForDriver,
   onlineStatus,
   acceptRide,
   rejectRide,
   updateRideStatus,
+  viewEarningsHistory,
 };

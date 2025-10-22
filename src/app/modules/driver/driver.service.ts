@@ -136,10 +136,36 @@ const updateRideStatus = async (
   return ride;
 };
 
+const viewEarningsHistory = async (driverUserId: string) => {
+  const existingDrive = await Driver.findOne({
+    user: new Types.ObjectId(driverUserId),
+  });
+  if (!existingDrive) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Driver Not Found");
+  }
+
+  const rides = await Ride.find({
+    driver: new Types.ObjectId(driverUserId),
+    status: RideStatus.COMPLETED,
+  });
+
+  const totalEarningFromRides = rides.reduce(
+    (sum, r) => sum + (r.fare || 0),
+    0
+  );
+
+  return {
+    totalEarningStored: existingDrive.totalEarning,
+    totalEarningsCalculated: totalEarningFromRides,
+    rides,
+  };
+};
+
 export const DriverServices = {
   registerForDriver,
   onlineStatus,
   acceptRide,
   rejectRide,
   updateRideStatus,
+  viewEarningsHistory,
 };
