@@ -38,6 +38,11 @@ const createUser = async (payload: Partial<IUser>) => {
   return user;
 };
 
+const getMe = async (userId: string) => {
+  const user = await User.findById(userId).select("-password");
+  return user;
+};
+
 // update user
 const updateUser = async (
   userId: string,
@@ -167,6 +172,7 @@ const driverSuspendStatus = async (driverId: string) => {
 
 export const UserServices = {
   createUser,
+  getMe,
   getAllUsers,
   getAllRider,
   getAllDriver,

@@ -13,6 +13,7 @@ router.post(
   validateRequest(createUserZodSchema),
   UserController.createUser
 );
+router.get("/me", checkAuth(...Object.values(Role)), UserController.getMe);
 
 // get all users
 router.get(

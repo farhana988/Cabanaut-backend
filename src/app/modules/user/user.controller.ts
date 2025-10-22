@@ -18,6 +18,19 @@ const createUser = catchAsync(
   }
 );
 
+const getMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user;
+    const result = await UserServices.getMe(decodedToken.userId);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Your profile Retrieved Successfully",
+      data: result,
+    });
+  }
+);
+
 // update user
 const updateUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -121,6 +134,7 @@ const driverSuspendStatus = catchAsync(
 
 export const UserController = {
   createUser,
+  getMe,
   getAllUsers,
   getAllRider,
   getAllDriver,
