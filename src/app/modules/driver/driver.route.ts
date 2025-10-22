@@ -32,4 +32,10 @@ router.patch(
   DriverController.rejectRide
 );
 
+router.patch(
+  "/update-status/:rideId",
+  checkAuth(Role.DRIVER),
+  DriverController.updateRideStatus
+);
+
 export const DriverRoutes = router;

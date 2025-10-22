@@ -84,9 +84,62 @@ const rejectRide = async (rideId: string) => {
   return ride;
 };
 
+const updateRideStatus = async (
+  rideId: string,
+  driverUserId: string,
+  status: string
+) => {
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    throw new AppError(httpStatus.NOT_FOUND, "ride not found");
+  }
+
+  if (!ride.driver || ride.driver.toString() !== driverUserId) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Your Are not Permitted To update this Status"
+    );
+  }
+  const allowedTransitions: Record<string, string[]> = {
+    [RideStatus.ACCEPTED]: [RideStatus.PICKED_UP],
+    [RideStatus.PICKED_UP]: [RideStatus.IN_TRANSIT],
+    [RideStatus.IN_TRANSIT]: [RideStatus.COMPLETED],
+  };
+  if (
+    !(ride.status in allowedTransitions) ||
+    !allowedTransitions[ride.status].includes(status)
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Can't transit from ${ride.status} to ${status}`
+    );
+  }
+
+  ride.status = status as RideStatus;
+  if (status === RideStatus.PICKED_UP) {
+    ride.timestampsLog.pickedUpAt = new Date();
+  }
+  if (ride.status === RideStatus.COMPLETED) {
+    ride.timestampsLog.completedAt = new Date();
+
+    if (ride.driver) {
+      await Driver.findOneAndUpdate(
+        { user: new Types.ObjectId(driverUserId) },
+        {
+          $inc: { totalEarning: ride.fare || 0 },
+          $set: { currentRideId: null },
+        }
+      );
+    }
+  }
+  await ride.save();
+  return ride;
+};
+
 export const DriverServices = {
   registerForDriver,
   onlineStatus,
   acceptRide,
   rejectRide,
+  updateRideStatus,
 };

@@ -52,9 +52,27 @@ const rejectRide = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateRideStatus = catchAsync(async (req: Request, res: Response) => {
+  const { rideId } = req.params;
+  const { status } = req.body;
+  const { userId: driverUserId } = req.user as JwtPayload;
+  const ride = await DriverServices.updateRideStatus(
+    rideId,
+    driverUserId,
+    status
+  );
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "Ride Status Updated Successfully",
+    data: ride,
+  });
+});
+
 export const DriverController = {
   registerForDriver,
   onlineStatus,
   acceptRide,
   rejectRide,
+  updateRideStatus,
 };
