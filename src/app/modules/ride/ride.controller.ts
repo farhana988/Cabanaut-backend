@@ -39,8 +39,19 @@ const cancelRide = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllRidesList = catchAsync(async (req: Request, res: Response) => {
+  const rides = await RideServices.getAllRidesList();
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All Ride List Retrieved successfully",
+    data: rides,
+  });
+});
+
 export const RideController = {
   createRide,
   viewRideHistory,
   cancelRide,
+  getAllRidesList
 };

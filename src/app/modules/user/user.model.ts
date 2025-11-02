@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { IAuthProvider, IsActive, IUser, Role } from "./user.interface";
+import { DriverApproveStatus } from "../driver/driver.interface";
 
 const authProviderSchema = new Schema<IAuthProvider>(
   {
@@ -10,6 +11,27 @@ const authProviderSchema = new Schema<IAuthProvider>(
     versionKey: false,
     _id: false,
   }
+);
+
+const driverInfoSchema = new Schema(
+  {
+    vehicle: {
+      make: { type: String },
+      model: { type: String },
+      plateNumber: { type: String },
+    },
+    licenseNumber: { type: String },
+    nationalId: { type: String },
+    vehicleImage: { type: String },
+    isOnline: { type: Boolean, default: false },
+    approvedStatus: {
+      type: String,
+      enum: Object.values(DriverApproveStatus),
+      default: DriverApproveStatus.Pending,
+    },
+    totalEarning: { type: Number, default: 0 },
+  },
+  { _id: false, versionKey: false }
 );
 
 const userSchema = new Schema<IUser>(
@@ -34,6 +56,7 @@ const userSchema = new Schema<IUser>(
     },
     isVerified: { type: Boolean, default: false },
     auth: [authProviderSchema],
+    driverInfo: driverInfoSchema,
   },
   {
     timestamps: true,

@@ -98,8 +98,15 @@ const cancelRide = async (rideId: string, riderId: string) => {
   return ride;
 };
 
+const getAllRidesList = async () => {
+  const allRidesList = await Ride.find({}).sort({ createdAt: -1 });
+
+  return allRidesList;
+};
+
 export const RideServices = {
   createRide,
   viewRideHistory,
   cancelRide,
+  getAllRidesList,
 };

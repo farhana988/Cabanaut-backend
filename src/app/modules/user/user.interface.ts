@@ -1,4 +1,5 @@
 import mongoose, { Types } from "mongoose";
+import { DriverApproveStatus } from "../driver/driver.interface";
 export enum Role {
   SUPER_ADMIN = "SUPER_ADMIN",
   ADMIN = "ADMIN",
@@ -28,5 +29,18 @@ export interface IUser {
   isVerified?: boolean;
   role: Role;
   auth: IAuthProvider[];
-  bookings?: Types.ObjectId[];
+  driverInfo?: {
+    vehicle: {
+      make?: string;
+      model?: string;
+      plateNumber?: string;
+    };
+    licenseNumber: string;
+    nationalId: string;
+    vehicleImage?: string;
+    isOnline?: boolean;
+    approvedStatus?: DriverApproveStatus;
+    totalEarning?: number;
+    currentRide?: Types.ObjectId | null;
+  };
 }

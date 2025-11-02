@@ -141,10 +141,22 @@ const driverApprovedStatus = async (driverId: string) => {
   }
 
   driver.approvedStatus = DriverApproveStatus.Approved;
-  user.role = Role.DRIVER;
-
   await driver.save();
+
+  // Update user role & embed driver info
+  user.role = Role.DRIVER;
+  user.driverInfo = {
+    vehicle: driver.vehicle,
+    licenseNumber: driver.licenseNumber,
+    nationalId: driver.nationalId,
+    vehicleImage: driver.vehicleImage,
+    isOnline: driver.isOnline,
+    approvedStatus: driver.approvedStatus,
+    totalEarning: driver.totalEarning,
+  };
+
   await user.save();
+
   return driver;
 };
 

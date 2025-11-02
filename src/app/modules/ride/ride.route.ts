@@ -19,4 +19,10 @@ router.patch(
   RideController.cancelRide
 );
 
+router.get(
+  "/all-rides-list",
+  checkAuth(Role.SUPER_ADMIN, Role.DRIVER),
+  RideController.getAllRidesList
+);
+
 export const RideRoute = router;
